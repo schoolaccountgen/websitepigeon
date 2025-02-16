@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith</title>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rainbow Moving Text</title>
+        <style>
+            body, html {
+                height: 100%;
+                margin: 0;
+                display: flex;
+                flex-direction: column; /* Stack items vertically */
+                justify-content: center;
+                align-items: center;
+                font-family: Arial, sans-serif;
+                background-color: #f0f0f0; /* Optional: Background color */
+            }
+    
+            .centered-text {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px; /* Space between text and image */
+                background: linear-gradient(90deg, 
+                    red, rgb(133, 0, 0), rgb(255, 0, 0), rgb(128, 0, 0), rgb(255, 0, 0), rgb(133, 0, 0), rgb(255, 0, 0), red); /* Rainbow gradient */
+                background-size: 200% 100%; /* Double the width for smooth animation */
+                -webkit-background-clip: text; /* Clip the background to the text */
+                -webkit-text-fill-color: transparent; /* Make the text transparent */
+                animation: moveRainbow 6s linear infinite; /* Animation to move the rainbow */
+            }
+    
+            @keyframes moveRainbow {
+                0% {
+                    background-position: 0% 50%; /* Start position of the gradient */
+                }
+                100% {
+                    background-position: 100% 50%; /* End position of the gradient */
+                }
+            }
+    
+            .centered-image {
+                max-width: 50%; /* Reduce image size by half */
+                height: auto; /* Maintains aspect ratio */
+                border-radius: 8px; /* Optional: Rounded corners */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+                transition: transform 0.2s ease; /* Smooth transition for the tilt effect */
+                cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+            }
+    
+            .centered-image:hover {
+                box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.8); /* Glow effect on hover */
+            }
+    
+            /* Bounce animation */
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0);
+                }
+                40% {
+                    transform: translateY(-30px);
+                }
+                60% {
+                    transform: translateY(-15px);
+                }
+            }
+    
+            .bounce {
+                animation: bounce 1s ease;
+            }
+    
+            /* Fade-out text */
+            .fade-out-text {
+                position: absolute;
+                font-size: 40px;
+                font-weight: bold;
+                color: #ff0000; /* Red color */
+                opacity: 1;
+                animation: fadeOut 2s ease forwards; /* Fade-out animation */
+                transform: translateX(-50px) rotate(-10deg); /* Move left and rotate */
+                top: 50%; /* Center vertically */
+                left: 50%; /* Center horizontally */
+            }
+    
+            @keyframes fadeOut {
+                0% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+    
+            /* Hide the YouTube player */
+            #youtube-player {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="centered-text">
+            WHY IS BRO LOWK CHEEKED UP ON A WEDNESDAY AFTERNOON 🍑🍑🍆🍆
+        </div>
+        <img src="https://i.pinimg.com/736x/f7/b5/1e/f7b51e8787f7164de282b7b545762f47.jpg" alt="Placeholder Image" class="centered-image" id="bounceImage">
+    
+        <!-- YouTube IFrame Player -->
+        <div id="youtube-player"></div>
+    
+        <script>
+            const image = document.getElementById('bounceImage');
+    
+            // Function to tilt the image based on cursor position
+            image.addEventListener('mousemove', (e) => {
+                const rect = image.getBoundingClientRect(); // Get the image's position and size
+                const centerX = rect.left + rect.width / 2; // Calculate the center X of the image
+                const centerY = rect.top + rect.height / 2; // Calculate the center Y of the image
+    
+                // Calculate the cursor's position relative to the center of the image
+                const offsetX = (e.clientX - centerX) / (rect.width / 2); // Normalize to -1 to 1
+                const offsetY = (e.clientY - centerY) / (rect.height / 2); // Normalize to -1 to 1
+    
+                // Tilt the image in the opposite direction of the cursor
+                const tiltX = -offsetY * 10; // Tilt vertically based on horizontal cursor position
+                const tiltY = offsetX * 10; // Tilt horizontally based on vertical cursor position
+    
+                image.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+            });
+    
+            // Reset the tilt when the cursor leaves the image
+            image.addEventListener('mouseleave', () => {
+                image.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+    
+            // Load the YouTube IFrame API
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    
+            let player;
+    
+            // Initialize the YouTube player
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('youtube-player', {
+                    height: '0', // Hide the player
+                    width: '0', // Hide the player
+                    videoId: 'c0_ATE51TR8', // YouTube video ID
+                    events: {
+                        'onReady': onPlayerReady,
+                    }
+                });
+            }
+    
+            // When the player is ready, play the audio on image click
+            function onPlayerReady(event) {
+                image.addEventListener('click', () => {
+                    // Add the bounce animation
+                    image.classList.add('bounce');
+                    setTimeout(() => {
+                        image.classList.remove('bounce'); // Remove the bounce class after the animation ends
+                    }, 1000); // 1000ms = 1s (duration of the bounce animation)
+    
+                    // Create and display the "GYATTT!!" text
+                    const gyattText = document.createElement('div');
+                    gyattText.innerText = 'GYATTT!!';
+                    gyattText.classList.add('fade-out-text');
+                    document.body.appendChild(gyattText);
+    
+                    // Remove the text after the fade-out animation ends
+                    setTimeout(() => {
+                        gyattText.remove();
+                    }, 2000); // 2000ms = 2s (duration of the fade-out animation)
+    
+                    // Play the YouTube video's audio
+                    event.target.playVideo();
+                });
+            }
+        </script>
+    </body>
+    </html>
